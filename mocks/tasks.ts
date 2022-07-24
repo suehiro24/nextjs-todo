@@ -1,4 +1,4 @@
-import { Task } from '../components/tasklist'
+import { Task } from '../components/TaskList'
 
 export const tasks: Task[] = []
 for (let index = 0; index < 10; index++) {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { NextPage } from 'next'
-import Layout from '../components/layout'
-import { Tasklist, Task } from '../components/tasklist'
+import Layout from '../components/Layout'
+import { TaskList, Task } from '../components/TaskList'
 import tasks from '../mocks/tasks'
 
 const Home: NextPage = () => {
@@ -9,7 +9,7 @@ const Home: NextPage = () => {
 
   return (
     <Layout home={true} title={'Todo List'}>
-      <Tasklist items={items} updateItemsHandler={setItems}></Tasklist>
+      <TaskList items={items} updateItemsHandler={setItems}></TaskList>
     </Layout>
   )
 }

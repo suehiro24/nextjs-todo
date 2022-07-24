@@ -10,7 +10,7 @@ import { Dispatch, SetStateAction } from 'react'
 
 export type Task = { name: string; checked: boolean }
 
-export const Tasklist = ({
+export const TaskList = ({
   items,
   updateItemsHandler,
 }: {
@@ -49,4 +49,4 @@ export const Tasklist = ({
   )
 }
 
-export default Tasklist
+export default TaskList
