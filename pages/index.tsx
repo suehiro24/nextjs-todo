@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import type { NextPage } from 'next'
 import Layout from 'components/Layout'
-import { TaskList, Task } from 'components/TaskList'
-import tasks from 'mocks/tasks'
+import { TodoList, Todo } from 'components/TodoList'
+import todos from 'mocks/todos'
 
 const Home: NextPage = () => {
-  const [items, setItems] = useState<Task[]>(tasks)
+  const [items, setItems] = useState<Todo[]>(todos)
 
   return (
     <Layout home={true} title={'Todo List'}>
-      <TaskList items={items} updateItemsHandler={setItems}></TaskList>
+      <TodoList items={items} updateItemsHandler={setItems}></TodoList>
     </Layout>
   )
 }

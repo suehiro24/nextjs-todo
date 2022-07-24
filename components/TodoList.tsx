@@ -8,16 +8,16 @@ import {
 } from '@mui/material'
 import { Dispatch, SetStateAction } from 'react'
 
-export type Task = { name: string; checked: boolean }
+export type Todo = { name: string; checked: boolean }
 
-export const TaskList = ({
+export const TodoList = ({
   items,
   updateItemsHandler,
 }: {
-  items: Task[]
+  items: Todo[]
   updateItemsHandler:
-    | Dispatch<SetStateAction<Task[]>>
-    | ((newItems: Task[]) => void)
+    | Dispatch<SetStateAction<Todo[]>>
+    | ((newItems: Todo[]) => void)
 }) => {
   const clickCheckBox = (index: number) => {
     const newItems = items.slice()
@@ -49,4 +49,4 @@ export const TaskList = ({
   )
 }
 
-export default TaskList
+export default TodoList
