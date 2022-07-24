@@ -6,29 +6,24 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import { useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
-type Task = { name: string; checked: boolean }
+export type Task = { name: string; checked: boolean }
 
-const initialItems: Task[] = []
-for (let index = 0; index < 10; index++) {
-  const item: Task = {
-    name: `task${index}`,
-    checked: false,
-  }
-  initialItems.push(item)
-}
-
-export default function Tasklist({ children }: { children?: React.ReactNode }) {
-  const [items, setItems] = useState<Task[]>(initialItems)
-
+export const Tasklist = ({
+  items,
+  updateItemsHandler,
+}: {
+  items: Task[]
+  updateItemsHandler:
+    | Dispatch<SetStateAction<Task[]>>
+    | ((newItems: Task[]) => void)
+}) => {
   const clickCheckBox = (index: number) => {
     const newItems = items.slice()
     newItems[index].checked = !items[index].checked
 
-    setItems(newItems)
-
-    console.warn('following item is updated', newItems[index])
+    updateItemsHandler(newItems)
   }
 
   return (
@@ -53,3 +48,5 @@ export default function Tasklist({ children }: { children?: React.ReactNode }) {
     </List>
   )
 }
+
+export default Tasklist
