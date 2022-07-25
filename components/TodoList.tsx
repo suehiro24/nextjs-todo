@@ -6,9 +6,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
+import Todo from 'data/Todo'
 import { Dispatch, SetStateAction } from 'react'
-
-export type Todo = { name: string; checked: boolean }
 
 export const TodoList = ({
   items,
@@ -21,7 +20,7 @@ export const TodoList = ({
 }) => {
   const clickCheckBox = (index: number) => {
     const newItems = items.slice()
-    newItems[index].checked = !items[index].checked
+    newItems[index] = newItems[index].changeStatus('Done', true)
 
     updateItemsHandler(newItems)
   }
@@ -36,7 +35,7 @@ export const TodoList = ({
               <ListItemIcon>
                 <Checkbox
                   edge="start"
-                  checked={item.checked}
+                  checked={item.status === 'Done'}
                   tabIndex={-1}
                   disableRipple
                 />
