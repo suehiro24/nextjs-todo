@@ -1,13 +1,14 @@
 import {
-  Checkbox,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import Todo from 'data/Todo'
-import { Dispatch, SetStateAction } from 'react'
+import Todo, { TodoStatus } from 'data/Todo'
+import { Dispatch, SetStateAction, useState } from 'react'
+import TodoListItemMenu from './TodoListItemMenu'
 
 export const TodoList = ({
   items,
@@ -18,11 +19,28 @@ export const TodoList = ({
     | Dispatch<SetStateAction<Todo[]>>
     | ((newItems: Todo[]) => void)
 }) => {
-  const clickCheckBox = (index: number) => {
-    const newItems = items.slice()
-    newItems[index] = newItems[index].changeStatus('Done', true)
+  const changeStatus =
+    (to: TodoStatus, index: number) =>
+    (event: React.MouseEvent<HTMLElement>) => {
+      console.log(index)
+      const newItems = items.slice()
+      newItems[index] = newItems[index].changeStatus(to, to === 'Done')
 
-    updateItemsHandler(newItems)
+      updateItemsHandler(newItems)
+    }
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [menuOpenIndex, setMenuOpenIndex] = useState<null | number>(null)
+
+  const handleOpenMenu =
+    (index: number) => (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget)
+      setMenuOpenIndex(index)
+    }
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null)
+    setMenuOpenIndex(null)
   }
 
   return (
@@ -30,17 +48,29 @@ export const TodoList = ({
       {items.map((item, index) => {
         return (
           <ListItem key={item.name}>
-            <ListItemButton onClick={() => clickCheckBox(index)} dense>
+            <ListItemButton
+              onClick={() => {
+                console.log('modify')
+              }}
+              dense
+            >
               <ListItemText primary={item.name} />
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  checked={item.status === 'Done'}
-                  tabIndex={-1}
-                  disableRipple
-                />
-              </ListItemIcon>
             </ListItemButton>
+            <ListItemIcon>
+              <TodoListItemMenu
+                open={menuOpenIndex === index}
+                anchorEl={anchorEl}
+                onOpenMenu={handleOpenMenu(index)}
+                onCloseMenu={handleCloseMenu}
+                onWip={changeStatus('WIP', index)}
+                onModify={() => {
+                  console.log('modify', index)
+                }}
+                onDelete={() => {
+                  console.log('delete', index)
+                }}
+              ></TodoListItemMenu>
+            </ListItemIcon>
           </ListItem>
         )
       })}
