@@ -1,22 +1,28 @@
-import { useState } from 'react'
+import { useContext } from 'react'
 import type { NextPage } from 'next'
 import Layout from 'components/Layout'
 import { TodoList } from 'components/TodoList'
-import todos from 'mocks/todos'
 import { AddTodoField } from 'components/AddTodoField'
 import Todo from 'data/Todo'
+import TodoContext from 'components/TodoContext'
 
 const Home: NextPage = () => {
-  const [items, setItems] = useState<Todo[]>(todos)
+  const context = useContext(TodoContext)
 
   const clickAddIconHandler = (newTodoName: string) => {
-    setItems([...items, Todo.create(newTodoName, 'Short', null)])
+    context.setTodos([
+      ...context.todos,
+      Todo.create(newTodoName, 'Short', null),
+    ])
   }
 
   return (
     <Layout home={true} title={'Todo List'}>
       <AddTodoField clickAddIconHandler={clickAddIconHandler}></AddTodoField>
-      <TodoList items={items} updateItemsHandler={setItems}></TodoList>
+      <TodoList
+        items={context.todos}
+        updateItemsHandler={context.setTodos}
+      ></TodoList>
     </Layout>
   )
 }
