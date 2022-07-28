@@ -4,15 +4,15 @@ import { Box } from '@mui/system'
 import { useState } from 'react'
 
 export const AddTodoField = ({
-  clickAddIconHandler,
+  onAdd,
 }: {
-  clickAddIconHandler: (newTodoName: string) => void
+  onAdd: (newTodoName: string) => void
 }) => {
   const [newTodoName, setNewTodoName] = useState<string>('')
 
-  const addTodo = () => {
+  const handleAdd = () => {
     if (!newTodoName) return
-    clickAddIconHandler(newTodoName)
+    onAdd(newTodoName)
     setNewTodoName('')
   }
 
@@ -32,7 +32,7 @@ export const AddTodoField = ({
         value={newTodoName}
         onChange={e => setNewTodoName(e.target.value)}
       ></TextField>
-      <IconButton aria-label="add todo" onClick={addTodo}>
+      <IconButton aria-label="add todo" onClick={handleAdd}>
         <AddIcon></AddIcon>
       </IconButton>
     </Box>

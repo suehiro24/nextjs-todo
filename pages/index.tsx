@@ -9,7 +9,7 @@ import TodoContext from 'components/TodoContext'
 const Home: NextPage = () => {
   const context = useContext(TodoContext)
 
-  const clickAddIconHandler = (newTodoName: string) => {
+  const handleAdd = (newTodoName: string) => {
     context.setTodos([
       ...context.todos,
       Todo.create(newTodoName, 'Short', null),
@@ -18,7 +18,8 @@ const Home: NextPage = () => {
 
   return (
     <Layout home={true} title={'Todo List'}>
-      <AddTodoField clickAddIconHandler={clickAddIconHandler}></AddTodoField>
+      <AddTodoField onAdd={handleAdd}></AddTodoField>
+
       <TodoList
         items={context.todos}
         onWip={context.updateTodoStatusByIndex('WIP')}
