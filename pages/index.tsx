@@ -21,7 +21,7 @@ const Home: NextPage = () => {
       <AddTodoField clickAddIconHandler={clickAddIconHandler}></AddTodoField>
       <TodoList
         items={context.todos}
-        updateItemsHandler={context.setTodos}
+        onWip={context.updateTodoStatusByIndex('WIP')}
       ></TodoList>
     </Layout>
   )

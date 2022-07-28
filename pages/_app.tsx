@@ -7,14 +7,24 @@ import '@fontsource/roboto/700.css'
 
 import type { AppProps } from 'next/app'
 import TodoContext from 'components/TodoContext'
-import todos from 'mocks/todos'
+import { todos as mockTodos } from 'mocks/todos'
 import { useState } from 'react'
+import { TodoStatus } from 'data/Todo'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [todosState, setTodos] = useState(todos)
+  const [todos, setTodos] = useState(mockTodos)
+
+  const updateTodoStatusByIndex = (to: TodoStatus) => (index: number) => {
+    const newTodos = todos.slice()
+    newTodos[index] = newTodos[index].changeStatus(to, to === 'Done')
+
+    setTodos(newTodos)
+
+    console.log(`${newTodos[index].name}'s status is updated to ${to} `)
+  }
 
   return (
-    <TodoContext.Provider value={{ todos: todosState, setTodos: setTodos }}>
+    <TodoContext.Provider value={{ todos, setTodos, updateTodoStatusByIndex }}>
       <Component {...pageProps} />
     </TodoContext.Provider>
   )

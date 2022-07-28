@@ -6,29 +6,17 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import Todo, { TodoStatus } from 'data/Todo'
-import { Dispatch, SetStateAction, useState } from 'react'
+import Todo from 'data/Todo'
+import { useState } from 'react'
 import TodoListItemMenu from './TodoListItemMenu'
 
 export const TodoList = ({
   items,
-  updateItemsHandler,
+  onWip,
 }: {
   items: Todo[]
-  updateItemsHandler:
-    | Dispatch<SetStateAction<Todo[]>>
-    | ((newItems: Todo[]) => void)
+  onWip: (index: number) => void
 }) => {
-  const changeStatus =
-    (to: TodoStatus, index: number) =>
-    (event: React.MouseEvent<HTMLElement>) => {
-      console.log(index)
-      const newItems = items.slice()
-      newItems[index] = newItems[index].changeStatus(to, to === 'Done')
-
-      updateItemsHandler(newItems)
-    }
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [menuOpenIndex, setMenuOpenIndex] = useState<null | number>(null)
 
@@ -62,6 +50,7 @@ export const TodoList = ({
                 anchorEl={anchorEl}
                 onOpenMenu={handleOpenMenu(index)}
                 onCloseMenu={handleCloseMenu}
+                onWip={() => onWip(index)}
                 onWip={changeStatus('WIP', index)}
                 onModify={() => {
                   console.log('modify', index)
