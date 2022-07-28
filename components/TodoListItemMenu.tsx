@@ -15,10 +15,15 @@ export const TodoListItemMenu = ({
   anchorEl: HTMLElement | null
   onOpenMenu: MouseEventHandler
   onCloseMenu: () => void
-  onWip: MouseEventHandler
-  onModify: MouseEventHandler
-  onDelete: MouseEventHandler
+  onWip: () => void
+  onModify: () => void
+  onDelete: () => void
 }) => {
+  const execHandlers = (handler: () => void) => () => {
+    handler()
+    onCloseMenu()
+  }
+
   return (
     <>
       <IconButton aria-label="add todo" onClick={onOpenMenu}>
@@ -38,9 +43,9 @@ export const TodoListItemMenu = ({
           horizontal: 'left',
         }}
       >
-        <MenuItem onClick={onWip}>WIP</MenuItem>
-        <MenuItem onClick={onModify}>Modify</MenuItem>
-        <MenuItem onClick={onDelete}>Delete</MenuItem>
+        <MenuItem onClick={execHandlers(onWip)}>WIP</MenuItem>
+        <MenuItem onClick={execHandlers(onModify)}>Modify</MenuItem>
+        <MenuItem onClick={execHandlers(onDelete)}>Delete</MenuItem>
       </Menu>
     </>
   )

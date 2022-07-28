@@ -13,9 +13,13 @@ import TodoListItemMenu from './TodoListItemMenu'
 export const TodoList = ({
   items,
   onWip,
+  onModify,
+  onDelete,
 }: {
   items: Todo[]
   onWip: (index: number) => void
+  onModify: (index: number) => void
+  onDelete: (index: number) => void
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [menuOpenIndex, setMenuOpenIndex] = useState<null | number>(null)
@@ -36,12 +40,7 @@ export const TodoList = ({
       {items.map((item, index) => {
         return (
           <ListItem key={item.name}>
-            <ListItemButton
-              onClick={() => {
-                console.log('modify')
-              }}
-              dense
-            >
+            <ListItemButton onClick={() => onModify(index)} dense>
               <ListItemText primary={item.name} />
             </ListItemButton>
             <ListItemIcon>
@@ -51,13 +50,8 @@ export const TodoList = ({
                 onOpenMenu={handleOpenMenu(index)}
                 onCloseMenu={handleCloseMenu}
                 onWip={() => onWip(index)}
-                onWip={changeStatus('WIP', index)}
-                onModify={() => {
-                  console.log('modify', index)
-                }}
-                onDelete={() => {
-                  console.log('delete', index)
-                }}
+                onModify={() => onModify(index)}
+                onDelete={() => onDelete(index)}
               ></TodoListItemMenu>
             </ListItemIcon>
           </ListItem>
