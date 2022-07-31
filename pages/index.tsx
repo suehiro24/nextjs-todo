@@ -17,7 +17,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Layout home={true} title={'Todo List'}>
+    <Layout home={true} title={'ALL'}>
       <AddTodoField onAdd={handleAdd}></AddTodoField>
 
       <TodoList

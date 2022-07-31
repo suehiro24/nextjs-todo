@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import { Box, Container } from '@mui/system'
-import { AppBar, Toolbar, Typography } from '@mui/material'
+import { AppBar, Toolbar, Typography, Button } from '@mui/material'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 export default function Layout({
   children,
@@ -11,6 +13,8 @@ export default function Layout({
   home?: boolean
   title?: string
 }) {
+  const router = useRouter()
+
   return (
     <>
       <Head>
@@ -24,11 +28,27 @@ export default function Layout({
           </Typography>
         </Toolbar>
       </AppBar>
+
       <Container maxWidth="xl">
         <Box sx={{ m: 5 }}>
-          <Typography variant="subtitle1" component="h2">
-            {title}
-          </Typography>
+          <Box
+            sx={{
+              my: 4,
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <>
+              <Link href={'/'}>
+                <Button disabled={router.pathname === '/'}>ALL</Button>
+              </Link>
+              <Link href={'/wip'}>
+                <Button disabled={router.pathname === '/wip'}>WIP</Button>
+              </Link>
+            </>
+          </Box>
 
           <main>{children}</main>
         </Box>
