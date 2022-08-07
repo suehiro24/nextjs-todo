@@ -22,18 +22,18 @@ const Home: NextPage = () => {
     ])
   }
 
-  const handleWip = (index: number) => {
+  const handleWip = (todo: Todo, index: number) => {
     context.updateTodoStatusByIndex('WIP')(index)
     router.push('/wip')
   }
 
-  const handleModify = (index: number) => {
+  const handleModify = (todo: Todo, index: number) => {
     setOpen(true)
     setEditTodo(context.todos[index])
     console.log('start modifying todo', index)
   }
 
-  const handleDelete = (index: number) => {
+  const handleDelete = (todo: Todo, index: number) => {
     const newTodos = context.todos.slice()
     newTodos.splice(index, 1)
     context.setTodos(newTodos)
@@ -63,7 +63,7 @@ const Home: NextPage = () => {
       <AddTodoField onAdd={handleAdd}></AddTodoField>
 
       <TodoList
-        items={context.todos}
+        todos={context.todos}
         onWip={handleWip}
         onModify={handleModify}
         onDelete={handleDelete}

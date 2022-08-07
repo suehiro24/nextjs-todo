@@ -5,11 +5,13 @@ import { createContext, Dispatch, SetStateAction } from 'react'
 const TodoContext = createContext<{
   todos: Todo[]
   setTodos: Dispatch<SetStateAction<Todo[]>> | (() => void)
-  updateTodoStatusByIndex: (to: TodoStatus) => (index: number) => void
+  updateTodoStatus: (
+    to: TodoStatus
+  ) => (target: Todo, targetIndex?: number) => void
 }>({
   todos,
   setTodos: () => {},
-  updateTodoStatusByIndex: () => () => {},
+  updateTodoStatus: () => () => {},
 })
 
 export default TodoContext

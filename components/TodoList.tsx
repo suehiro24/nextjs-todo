@@ -10,16 +10,18 @@ import Todo from 'data/Todo'
 import { useState } from 'react'
 import TodoListItemMenu from './TodoListItemMenu'
 
+export type todoListMenuHandler = (todo: Todo, index: number) => void
+
 export const TodoList = ({
-  items,
+  todos,
   onWip,
   onModify,
   onDelete,
 }: {
-  items: Todo[]
-  onWip: (index: number) => void
-  onModify: (index: number) => void
-  onDelete: (index: number) => void
+  todos: Todo[]
+  onWip: todoListMenuHandler
+  onModify: todoListMenuHandler
+  onDelete: todoListMenuHandler
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [menuOpenIndex, setMenuOpenIndex] = useState<null | number>(null)
@@ -37,11 +39,11 @@ export const TodoList = ({
 
   return (
     <List>
-      {items.map((item, index) => {
+      {todos.map((todo, index) => {
         return (
-          <ListItem key={item.name}>
-            <ListItemButton onClick={() => onModify(index)} dense>
-              <ListItemText primary={item.name} />
+          <ListItem key={todo.name}>
+            <ListItemButton onClick={() => onModify(todo, index)} dense>
+              <ListItemText primary={todo.name} />
             </ListItemButton>
             <ListItemIcon>
               <TodoListItemMenu
@@ -49,9 +51,9 @@ export const TodoList = ({
                 anchorEl={anchorEl}
                 onOpenMenu={handleOpenMenu(index)}
                 onCloseMenu={handleCloseMenu}
-                onWip={() => onWip(index)}
-                onModify={() => onModify(index)}
-                onDelete={() => onDelete(index)}
+                onWip={() => onWip(todo, index)}
+                onModify={() => onModify(todo, index)}
+                onDelete={() => onDelete(todo, index)}
               ></TodoListItemMenu>
             </ListItemIcon>
           </ListItem>
