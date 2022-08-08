@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import type { NextPage } from 'next'
 import Layout from 'components/Layout'
 import {
@@ -6,16 +6,24 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardHeader,
   Grid,
   Typography,
 } from '@mui/material'
 import TodoContext from 'components/TodoContext'
+import TodoService from 'data/TodoService'
+import { useRouter } from 'next/router'
+import Todo from 'data/Todo'
 
-const Wip: NextPage = () => {
+const WipTodoPage: NextPage = () => {
   const context = useContext(TodoContext)
+  const router = useRouter()
 
-  const handleDone = context.updateTodoStatusByIndex('Done')
+  const handleFocus = (todo: Todo) => {
+    const todos = TodoService.focusOn(context.todos, todo)
+    context.setTodos(todos)
+    router.push('/focus')
+    console.log('focus on ...', todo)
+  }
 
   return (
     <Layout title={'WIP'}>
@@ -35,7 +43,12 @@ const Wip: NextPage = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <Button onClick={() => handleDone(index)}>DONE</Button>
+                  <Button
+                    onClick={() => handleFocus(todo)}
+                    disabled={todo.canFocus()}
+                  >
+                    Focus
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
@@ -46,4 +59,4 @@ const Wip: NextPage = () => {
   )
 }
 
-export default Wip
+export default WipTodoPage

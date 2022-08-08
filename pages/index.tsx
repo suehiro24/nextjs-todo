@@ -23,7 +23,7 @@ const Home: NextPage = () => {
   }
 
   const handleWip = (todo: Todo, index: number) => {
-    context.updateTodoStatusByIndex('WIP')(index)
+    context.updateTodoStatus(todo, 'WIP')
     router.push('/wip')
   }
 

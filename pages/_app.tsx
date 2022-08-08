@@ -9,22 +9,18 @@ import type { AppProps } from 'next/app'
 import TodoContext from 'components/TodoContext'
 import { todos as mockTodos } from 'mocks/todos'
 import { useState } from 'react'
-import { TodoStatus } from 'data/Todo'
+import Todo, { TodoPriority, TodoStatus, TodoTerm } from 'data/Todo'
+import TodoService from 'data/TodoService'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [todos, setTodos] = useState(mockTodos)
 
-  const updateTodoStatusByIndex = (to: TodoStatus) => (index: number) => {
-    const newTodos = todos.slice()
-    newTodos[index] = newTodos[index].changeStatus(to, to === 'Done')
-
-    setTodos(newTodos)
-
-    console.log(`${newTodos[index].name}'s status is updated to ${to} `)
+  const updateTodoStatus = (target: Todo, to: TodoStatus) => {
+    setTodos(TodoService.updateTodoStatus(todos, target, to))
   }
 
   return (
-    <TodoContext.Provider value={{ todos, setTodos, updateTodoStatusByIndex }}>
+    <TodoContext.Provider value={{ todos, setTodos, updateTodoStatus }}>
       <Component {...pageProps} />
     </TodoContext.Provider>
   )
