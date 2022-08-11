@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import type { NextPage } from 'next'
 import Layout from 'components/Layout'
 import {
@@ -9,18 +8,17 @@ import {
   Grid,
   Typography,
 } from '@mui/material'
-import TodoContext from 'components/TodoContext'
-import TodoService from 'data/TodoService'
 import { useRouter } from 'next/router'
 import Todo from 'data/Todo'
+import { useTodos, useTodosDispatch } from 'components/TodosContext'
 
 const WipTodoPage: NextPage = () => {
-  const context = useContext(TodoContext)
+  const todos = useTodos()
+  const todoDispatch = useTodosDispatch()
   const router = useRouter()
 
   const handleFocus = (todo: Todo) => {
-    const todos = TodoService.focusOn(context.todos, todo)
-    context.setTodos(todos)
+    todoDispatch({ type: 'focus', target: todo })
     router.push('/focus')
     console.log('focus on ...', todo)
   }
@@ -28,7 +26,7 @@ const WipTodoPage: NextPage = () => {
   return (
     <Layout title={'WIP'}>
       <Grid container spacing={{ xs: 2, md: 3 }}>
-        {context.todos.map((todo, index) =>
+        {todos.map((todo, index) =>
           todo.status === 'WIP' ? (
             <Grid item xs={6} md={4} key={todo.uuid}>
               <Card>

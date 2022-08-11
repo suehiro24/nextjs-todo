@@ -1,61 +1,56 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import type { NextPage } from 'next'
 import Layout from 'components/Layout'
 import { TodoList } from 'components/TodoList'
 import { AddTodoField } from 'components/AddTodoField'
 import Todo from 'data/Todo'
-import TodoContext from 'components/TodoContext'
 import { useRouter } from 'next/router'
 import { ModifyTodoDialog } from 'components/ModifyTodoDialog'
+import { useTodos, useTodosDispatch } from 'components/TodosContext'
+import { ModifyTodoInputs } from 'data/TodosService'
 
 const Home: NextPage = () => {
-  const context = useContext(TodoContext)
+  const todos = useTodos()
+  const todoDispatch = useTodosDispatch()
+
   const router = useRouter()
 
   const [open, setOpen] = useState(false)
   const [editTodo, setEditTodo] = useState<Todo>()
 
   const handleAdd = (newTodoName: string) => {
-    context.setTodos([
-      ...context.todos,
-      Todo.create(newTodoName, 'Short', null),
-    ])
+    todoDispatch({
+      type: 'add',
+      payload: { name: newTodoName, term: 'Short', priority: null },
+    })
   }
 
   const handleWip = (todo: Todo, index: number) => {
-    context.updateTodoStatus(todo, 'WIP')
+    todoDispatch({
+      type: 'status',
+      target: todo,
+      to: 'WIP',
+    })
     router.push('/wip')
   }
 
   const handleModify = (todo: Todo, index: number) => {
     setOpen(true)
-    setEditTodo(context.todos[index])
-    console.log('start modifying todo', index)
+    setEditTodo(todo)
   }
 
   const handleDelete = (todo: Todo, index: number) => {
-    const newTodos = context.todos.slice()
-    newTodos.splice(index, 1)
-    context.setTodos(newTodos)
+    todoDispatch({ type: 'delete', target: todo })
   }
 
-  const handleInputModifyTodoDialog = (newTodo: Todo) => {
+  const handleInputModifyTodoDialog = (input: ModifyTodoInputs) => {
+    if (!editTodo) return
     setOpen(false)
-
-    const newTodos = context.todos.slice()
-    const index = newTodos.findIndex((todo: Todo) => {
-      return todo.uuid === newTodo.uuid
-    })
-    newTodos[index] = newTodo
-
-    context.setTodos(newTodos)
-
-    console.log(`${newTodos[index].name} is modified`, newTodo)
+    todoDispatch({ type: 'modify', target: editTodo, payload: input })
   }
 
   const handleCloseModifyTodoDialog = () => {
     setOpen(false)
-    console.log('close dialog')
   }
 
   return (
@@ -63,7 +58,7 @@ const Home: NextPage = () => {
       <AddTodoField onAdd={handleAdd}></AddTodoField>
 
       <TodoList
-        todos={context.todos}
+        todos={todos}
         onWip={handleWip}
         onModify={handleModify}
         onDelete={handleDelete}

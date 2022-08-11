@@ -88,7 +88,7 @@ export class Todo {
     return new Todo(
       this.uuid,
       this.name,
-      this.status,
+      'WIP',
       this.term,
       this.priority,
       true,
@@ -96,11 +96,11 @@ export class Todo {
     )
   }
 
-  public unFocus = () => {
+  public unfocus = () => {
     return new Todo(
       this.uuid,
       this.name,
-      this.status,
+      this.status === 'Done' ? 'Done' : 'WIP',
       this.term,
       this.priority,
       false,

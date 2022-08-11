@@ -11,13 +11,8 @@ import {
   Select,
   TextField,
 } from '@mui/material'
-import Todo, {
-  TodoPriority,
-  TodoStatus,
-  todoStatus,
-  todoTerm,
-  TodoTerm,
-} from 'data/Todo'
+import Todo, { TodoPriority, todoTerm, TodoTerm } from 'data/Todo'
+import { ModifyTodoInputs } from 'data/TodosService'
 import { useEffect, useState } from 'react'
 
 export const ModifyTodoDialog = ({
@@ -29,7 +24,7 @@ export const ModifyTodoDialog = ({
 }: {
   editTodo?: Todo
   open: boolean
-  onInput: (newTodo: Todo) => void
+  onInput: (inputs: ModifyTodoInputs) => void
   onClose: () => void
   onCancel?: () => void
 }) => {
@@ -96,9 +91,7 @@ export const ModifyTodoDialog = ({
         </Button>
         <Button
           onClick={
-            editTodo
-              ? () => onInput(editTodo.update(name, term, priority))
-              : () => {}
+            editTodo ? () => onInput({ name, term, priority }) : () => {}
           }
         >
           Modify

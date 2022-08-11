@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Layout from 'components/Layout'
 import {
@@ -8,31 +8,30 @@ import {
   CardContent,
   Typography,
 } from '@mui/material'
-import TodoContext from 'components/TodoContext'
 import Todo from 'data/Todo'
 import { useRouter } from 'next/router'
+import { useTodos, useTodosDispatch } from 'components/TodosContext'
 
 const FocusTodoPage: NextPage = () => {
-  const context = useContext(TodoContext)
+  const todos = useTodos()
+  const todoDispatch = useTodosDispatch()
   const router = useRouter()
 
   const [focusTodo, setFocusTodo] = useState<Todo>()
 
   const handleDone = () => {
     if (!focusTodo) throw new Error('')
-
-    context.updateTodoStatus(focusTodo, 'Done')
-
+    todoDispatch({ type: 'status', target: focusTodo, to: 'Done' })
     router.push('/wip')
   }
 
   useEffect(() => {
-    const todo = context.todos.find(todo => todo.isFocused)
+    const todo = todos.find(todo => todo.isFocused)
 
     if (!todo) throw new Error('')
 
     setFocusTodo(todo)
-  }, [context.todos, focusTodo])
+  }, [todos])
 
   return focusTodo ? (
     <Layout title={'Focus'}>
