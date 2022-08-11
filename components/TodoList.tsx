@@ -41,7 +41,7 @@ export const TodoList = ({
     <List>
       {todos.map((todo, index) => {
         return (
-          <ListItem key={todo.name}>
+          <ListItem key={todo.uuid}>
             <ListItemButton onClick={() => onModify(todo, index)} dense>
               <ListItemText primary={todo.name} />
             </ListItemButton>
