@@ -1,5 +1,6 @@
-import { cloneDeep, result } from 'lodash'
+import { cloneDeep, map, result } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
+import TodosService from './TodosService'
 
 export const todoStatus = ['Done', 'WIP', 'Todo'] as const
 export type TodoStatus = typeof todoStatus[number]
@@ -15,37 +16,41 @@ export class Todo {
     public readonly term: TodoTerm,
     public readonly priority: TodoPriority,
     public readonly isFocused: boolean,
-    private _children: Todo[]
+    private _rootUuid?: string,
+    private _parentUuid?: string
   ) {}
 
   public static create(name: string, term: TodoTerm, priority: TodoPriority) {
-    return new Todo(uuidv4(), name, 'Todo', term, priority, false, [])
+    return new Todo(uuidv4(), name, 'Todo', term, priority, false)
   }
 
-  public get children(): Todo[] {
-    return this._children
+  public static createChild(
+    name: string,
+    term: TodoTerm,
+    priority: TodoPriority,
+    parent: Todo
+  ) {
+    return new Todo(
+      uuidv4(),
+      name,
+      'Todo',
+      term,
+      priority,
+      false,
+      parent._rootUuid ?? parent.uuid,
+      parent.uuid
+    )
   }
 
-  public addChildren(...todos: Todo[]): void {
-    this._children.push(...todos)
+  public get rootUuid(): string | undefined {
+    return this._rootUuid
   }
 
-  public removeChild(index: number): Todo {
-    const removedChild = cloneDeep(this._children[index])
-    this._children = this._children.splice(index, 1)
-    return removedChild
+  public get parentUuid(): string | undefined {
+    return this._parentUuid
   }
 
-  public changeStatus = (
-    status: TodoStatus,
-    changeChildren: boolean = false
-  ) => {
-    if (changeChildren) {
-      this.children.forEach((child, index, children) => {
-        children[index] = child.changeStatus(status, true)
-      })
-    }
-
+  public changeStatus = (status: TodoStatus) => {
     return new Todo(
       this.uuid,
       this.name,
@@ -53,7 +58,8 @@ export class Todo {
       this.term,
       this.priority,
       this.isFocused,
-      this.children
+      this._rootUuid,
+      this._parentUuid
     )
   }
 
@@ -65,14 +71,17 @@ export class Todo {
       term,
       priority,
       this.isFocused,
-      this.children
+      this._rootUuid,
+      this._parentUuid
     )
   }
 
-  public canFocus = (throwable = false) => {
-    const hasChildren = this.children.length > 0
+  public canFocus = (todos: Todo[], throwable = false) => {
+    return true
 
-    const result = hasChildren
+    const children = TodosService.getChildren(todos, this)
+    const hasChildren = children.length > 0
+    const result = !hasChildren // &&
 
     if (!throwable) return result
 
@@ -83,8 +92,8 @@ export class Todo {
     }
   }
 
-  public focus = () => {
-    !this.canFocus(true)
+  public focus = (todos: Todo[]) => {
+    this.canFocus(todos, true)
     return new Todo(
       this.uuid,
       this.name,
@@ -92,7 +101,8 @@ export class Todo {
       this.term,
       this.priority,
       true,
-      this.children
+      this._rootUuid,
+      this._parentUuid
     )
   }
 
@@ -104,7 +114,8 @@ export class Todo {
       this.term,
       this.priority,
       false,
-      this.children
+      this._rootUuid,
+      this._parentUuid
     )
   }
 }

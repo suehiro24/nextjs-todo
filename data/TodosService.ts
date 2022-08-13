@@ -13,6 +13,14 @@ export type ModifyTodoInputs = {
 }
 
 export class TodosService {
+  public static getChildren(todos: Todo[], terget: Todo): Todo[] {
+    return todos.filter(todo => todo.parentUuid === terget.uuid)
+  }
+
+  public static getParent(todos: Todo[], terget: Todo): Todo | undefined {
+    return todos.find(todo => todo.uuid === terget.parentUuid)
+  }
+
   public static addTodo(todos: Todo[], inputs: AddTodoInputs) {
     const newTodo = Todo.create(inputs.name, inputs.term, inputs.priority)
     const newTodos = [...todos, newTodo]
@@ -38,7 +46,7 @@ export class TodosService {
   }
 
   public static updateTodoStatus(todos: Todo[], target: Todo, to: TodoStatus) {
-    const statusUpdatedTodo = target.changeStatus(to, to === 'Done')
+    const statusUpdatedTodo = target.changeStatus(to)
     const newTodos = todos.map(todo =>
       todo.uuid === target.uuid ? statusUpdatedTodo : todo
     )
@@ -55,7 +63,7 @@ export class TodosService {
   public static focus(todos: Todo[], target: Todo) {
     const alreadyFocusedTodo = todos.find(todo => todo.isFocused)
 
-    const focusedTodo = target.focus()
+    const focusedTodo = target.focus(todos)
 
     const newTodos = todos.map(todo => {
       // switch focus todo
@@ -85,6 +93,15 @@ export class TodosService {
 
     console.log('unfocus', { target }, { newTodos })
     return newTodos
+  }
+
+  public static calcDonePerChildren(todos: Todo[], target: Todo) {
+    const children = this.getChildren(todos, target)
+    const nOfDone = children.reduce(
+      (prev, curr, idx, ary) => (ary[idx].status === 'Done' ? prev + 1 : prev),
+      0
+    )
+    return nOfDone / children.length
   }
 }
 

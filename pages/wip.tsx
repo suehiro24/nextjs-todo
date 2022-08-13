@@ -43,7 +43,7 @@ const WipTodoPage: NextPage = () => {
                 >
                   <Button
                     onClick={() => handleFocus(todo)}
-                    disabled={todo.canFocus()}
+                    disabled={!todo.canFocus(todos)}
                   >
                     Focus
                   </Button>
