@@ -1,4 +1,5 @@
 import {
+  Collapse,
   IconButton,
   List,
   ListItem,
@@ -7,7 +8,9 @@ import {
   ListItemText,
 } from '@mui/material'
 import Todo from 'data/Todo'
-import { useState } from 'react'
+import TodosService from 'data/TodosService'
+import { useCallback, useState } from 'react'
+import ExpandMore from './ExpandMoreIconButton'
 import TodoListItemMenu from './TodoListItemMenu'
 
 export type todoListMenuHandler = (todo: Todo, index: number) => void
@@ -17,46 +20,121 @@ export const TodoList = ({
   onWip,
   onModify,
   onDelete,
+  parent,
 }: {
   todos: Todo[]
   onWip: todoListMenuHandler
   onModify: todoListMenuHandler
   onDelete: todoListMenuHandler
+  parent?: Todo
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [menuOpenIndex, setMenuOpenIndex] = useState<null | number>(null)
+  const [menuOpenTodo, setMenuOpenTodo] = useState<Todo | null>(null)
 
   const handleOpenMenu =
-    (index: number) => (event: React.MouseEvent<HTMLElement>) => {
+    (todo: Todo) => (event: React.MouseEvent<HTMLElement>) => {
       setAnchorEl(event.currentTarget)
-      setMenuOpenIndex(index)
+      setMenuOpenTodo(todo)
     }
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = (todo: Todo) => () => {
     setAnchorEl(null)
-    setMenuOpenIndex(null)
+    setMenuOpenTodo(null)
   }
 
+  const isMenuOpenTodo = useCallback(
+    (todo: Todo) => {
+      return menuOpenTodo?.uuid === todo.uuid
+    },
+    [menuOpenTodo]
+  )
+
+  const [expandedTodos, setExpandedTodos] = useState<Todo[]>([])
+
+  const handleExpandClick = (todo: Todo) => () => {
+    const newExpandedTodos = isExpandedTodo(todo)
+      ? expandedTodos.filter(expTodo => expTodo.uuid !== todo.uuid)
+      : [...expandedTodos, todo]
+    setExpandedTodos(newExpandedTodos)
+  }
+
+  const isExpandedTodo = useCallback(
+    (todo: Todo) => {
+      return !!expandedTodos.find(expTodo => expTodo.uuid === todo.uuid)
+    },
+    [expandedTodos]
+  )
+
+  const expandedTodoChildren = useCallback(
+    (todo: Todo) => {
+      const target = expandedTodos.find(expTodo => expTodo.uuid === todo.uuid)
+      return target ? TodosService.getChildren(todos, target) : []
+    },
+    [todos, expandedTodos]
+  )
+
+  const hasChildren = useCallback(
+    (todo: Todo) => TodosService.getChildren(todos, todo).length > 0,
+    [todos]
+  )
+
   return (
-    <List>
+    <List disablePadding>
       {todos.map((todo, index) => {
         return (
-          <ListItem key={todo.uuid}>
-            <ListItemButton onClick={() => onModify(todo, index)} dense>
-              <ListItemText primary={todo.name} />
-            </ListItemButton>
-            <ListItemIcon>
-              <TodoListItemMenu
-                open={menuOpenIndex === index}
-                anchorEl={anchorEl}
-                onOpenMenu={handleOpenMenu(index)}
-                onCloseMenu={handleCloseMenu}
-                onWip={() => onWip(todo, index)}
-                onModify={() => onModify(todo, index)}
-                onDelete={() => onDelete(todo, index)}
-              ></TodoListItemMenu>
-            </ListItemIcon>
-          </ListItem>
+          <div key={todo.uuid}>
+            {/* Parents */}
+            {todo.parentUuid === parent?.uuid ? (
+              <ListItem dense>
+                <ExpandMore
+                  disabled={!hasChildren(todo)}
+                  expand={isExpandedTodo(todo)}
+                  onClick={handleExpandClick(todo)}
+                  aria-expanded={isExpandedTodo(todo)}
+                  aria-label="show more"
+                />
+
+                <ListItemButton
+                  sx={{ pl: 1 }}
+                  onClick={
+                    hasChildren(todo)
+                      ? handleExpandClick(todo)
+                      : () => onModify(todo, index)
+                  }
+                >
+                  <ListItemText primary={todo.name} />
+                </ListItemButton>
+
+                <ListItemIcon>
+                  <TodoListItemMenu
+                    open={isMenuOpenTodo(todo)}
+                    anchorEl={anchorEl}
+                    onOpenMenu={handleOpenMenu(todo)}
+                    onCloseMenu={handleCloseMenu(todo)}
+                    onWip={() => onWip(todo, index)}
+                    onModify={() => onModify(todo, index)}
+                    onDelete={() => onDelete(todo, index)}
+                  ></TodoListItemMenu>
+                </ListItemIcon>
+              </ListItem>
+            ) : null}
+
+            {/* Children */}
+            <Collapse
+              sx={{ ml: 1 }}
+              in={isExpandedTodo(todo)}
+              timeout={0}
+              unmountOnExit
+            >
+              <TodoList
+                todos={expandedTodoChildren(todo)}
+                onWip={onWip}
+                onModify={onModify}
+                onDelete={onDelete}
+                parent={todo}
+              />
+            </Collapse>
+          </div>
         )
       })}
     </List>
