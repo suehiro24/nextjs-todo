@@ -7,6 +7,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
+import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong'
 import Todo from 'data/Todo'
 import TodosService from 'data/TodosService'
 import { useCallback, useState } from 'react'
@@ -18,12 +19,14 @@ export type todoListMenuHandler = (todo: Todo, index: number) => void
 export const TodoList = ({
   todos,
   onWip,
+  onFocus,
   onModify,
   onDelete,
   parent,
 }: {
   todos: Todo[]
   onWip: todoListMenuHandler
+  onFocus: todoListMenuHandler
   onModify: todoListMenuHandler
   onDelete: todoListMenuHandler
   parent?: Todo
@@ -105,6 +108,14 @@ export const TodoList = ({
                   <ListItemText primary={todo.name} />
                 </ListItemButton>
 
+                {!hasChildren(todo) ? (
+                  <ListItemIcon>
+                    <IconButton onClick={() => onFocus(todo, index)}>
+                      <CenterFocusStrongIcon />
+                    </IconButton>
+                  </ListItemIcon>
+                ) : null}
+
                 <ListItemIcon>
                   <TodoListItemMenu
                     open={isMenuOpenTodo(todo)}
@@ -129,6 +140,7 @@ export const TodoList = ({
               <TodoList
                 todos={expandedTodoChildren(todo)}
                 onWip={onWip}
+                onFocus={onFocus}
                 onModify={onModify}
                 onDelete={onDelete}
                 parent={todo}

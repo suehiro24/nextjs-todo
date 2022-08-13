@@ -39,6 +39,12 @@ const Home: NextPage = () => {
     setEditTodo(todo)
   }
 
+  const handleFocus = (todo: Todo) => {
+    todoDispatch({ type: 'focus', target: todo })
+    router.push('/focus')
+    console.log('focus on ...', todo)
+  }
+
   const handleDelete = (todo: Todo, index: number) => {
     todoDispatch({ type: 'delete', target: todo })
   }
@@ -60,6 +66,7 @@ const Home: NextPage = () => {
       <TodoList
         todos={todos}
         onWip={handleWip}
+        onFocus={handleFocus}
         onModify={handleModify}
         onDelete={handleDelete}
       ></TodoList>
