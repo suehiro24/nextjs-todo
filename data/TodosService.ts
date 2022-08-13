@@ -77,6 +77,15 @@ export class TodosService {
     )
     return newTodos
   }
+
+  public static unfocus(todos: Todo[], target: Todo) {
+    const newTodos = todos.map(todo =>
+      todo.uuid === target.uuid ? target.unfocus() : todo
+    )
+
+    console.log('unfocus', { target }, { newTodos })
+    return newTodos
+  }
 }
 
 export default TodosService

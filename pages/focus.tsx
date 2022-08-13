@@ -19,17 +19,23 @@ const FocusTodoPage: NextPage = () => {
 
   const [focusTodo, setFocusTodo] = useState<Todo>()
 
-  const handleDone = () => {
+  const validFocusTodo = () => {
     if (!focusTodo) throw new Error('')
-    todoDispatch({ type: 'status', target: focusTodo, to: 'Done' })
+    return focusTodo
+  }
+
+  const handleDone = () => {
+    todoDispatch({ type: 'status', target: validFocusTodo(), to: 'Done' })
+    router.push('/wip')
+  }
+
+  const handleUnFocus = () => {
+    todoDispatch({ type: 'unfocus', target: validFocusTodo() })
     router.push('/wip')
   }
 
   useEffect(() => {
     const todo = todos.find(todo => todo.isFocused)
-
-    if (!todo) throw new Error('')
-
     setFocusTodo(todo)
   }, [todos])
 
@@ -47,6 +53,7 @@ const FocusTodoPage: NextPage = () => {
             alignItems: 'center',
           }}
         >
+          <Button onClick={() => handleUnFocus()}>UNFOCUS</Button>
           <Button onClick={() => handleDone()}>DONE</Button>
         </CardActions>
       </Card>

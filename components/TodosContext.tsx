@@ -49,6 +49,10 @@ type TasksReducerAction =
       target: Todo
     }
   | {
+      type: 'unfocus'
+      target: Todo
+    }
+  | {
       type: 'status'
       target: Todo
       to: TodoStatus
@@ -68,6 +72,8 @@ const tasksReducer = (todos: Todo[], action: TasksReducerAction) => {
     case 'focus': {
       return TodosService.focus(todos, action.target)
     }
+    case 'unfocus': {
+      return TodosService.unfocus(todos, action.target)
     }
     case 'delete': {
       return TodosService.deleteTodo(todos, action.target)
