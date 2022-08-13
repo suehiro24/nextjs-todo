@@ -40,24 +40,14 @@ const FocusTodoPage: NextPage = () => {
   }, [todos])
 
   return focusTodo ? (
-    <Layout title={'Focus'}>
-      <Card>
-        <CardContent>
-          <Typography variant="h6" component="div">
-            {focusTodo.name}
-          </Typography>
-        </CardContent>
-        <CardActions
-          sx={{
-            justifyContent: 'end',
-            alignItems: 'center',
+    <PageLayout>
           }}
         >
           <Button onClick={() => handleUnFocus()}>UNFOCUS</Button>
           <Button onClick={() => handleDone()}>DONE</Button>
         </CardActions>
       </Card>
-    </Layout>
+    </PageLayout>
   ) : null
 }
 

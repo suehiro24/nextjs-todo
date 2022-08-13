@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import Layout from 'components/Layout'
+import ListPageLayout from 'components/layouts/ListPageLayout'
 import {
   Button,
   Card,
@@ -24,7 +24,7 @@ const WipTodoPage: NextPage = () => {
   }
 
   return (
-    <Layout title={'WIP'}>
+    <ListPageLayout>
       <Grid container spacing={{ xs: 2, md: 3 }}>
         {todos.map((todo, index) =>
           todo.status === 'WIP' ? (
@@ -53,7 +53,7 @@ const WipTodoPage: NextPage = () => {
           ) : null
         )}
       </Grid>
-    </Layout>
+    </ListPageLayout>
   )
 }
 

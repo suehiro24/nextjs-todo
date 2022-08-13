@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { NextPage } from 'next'
-import Layout from 'components/Layout'
+import ListPageLayout from 'components/layouts/ListPageLayout'
 import { TodoList } from 'components/TodoList'
 import { AddTodoField } from 'components/AddTodoField'
 import Todo from 'data/Todo'
@@ -54,7 +54,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Layout home={true} title={'ALL'}>
+    <ListPageLayout>
       <AddTodoField onAdd={handleAdd}></AddTodoField>
 
       <TodoList
@@ -70,7 +70,7 @@ const Home: NextPage = () => {
         onInput={handleInputModifyTodoDialog}
         onClose={handleCloseModifyTodoDialog}
       ></ModifyTodoDialog>
-    </Layout>
+    </ListPageLayout>
   )
 }
 
