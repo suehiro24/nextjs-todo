@@ -7,6 +7,7 @@ import '@fontsource/roboto/700.css'
 
 import type { AppProps } from 'next/app'
 import { TasksProvider } from 'components/TodosContext'
+import 'styles/all-pages-style.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
