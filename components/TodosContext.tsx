@@ -3,7 +3,7 @@ import TodosService, {
   AddTodoInputs,
   ModifyTodoInputs,
 } from 'data/TodosService'
-import todos from 'mocks/todos'
+import initialTodos from 'mocks/todos'
 import { createContext, Dispatch, useContext, useReducer } from 'react'
 
 const TodosContext = createContext<Todo[]>([])
@@ -11,18 +11,18 @@ export const useTodos = () => {
   return useContext(TodosContext)
 }
 
-const TodosDispatchContext = createContext<Dispatch<TasksReducerAction>>(
+const TodosDispatchContext = createContext<Dispatch<TodosReducerAction>>(
   () => {}
 )
 export const useTodosDispatch = () => {
   return useContext(TodosDispatchContext)
 }
 
-export function TasksProvider({ children }: { children: React.ReactNode }) {
-  const [tasks, dispatch] = useReducer(tasksReducer, todos)
+export function TodosProvider({ children }: { children: React.ReactNode }) {
+  const [todos, dispatch] = useReducer(todosReducer, initialTodos)
 
   return (
-    <TodosContext.Provider value={tasks}>
+    <TodosContext.Provider value={todos}>
       <TodosDispatchContext.Provider value={dispatch}>
         {children}
       </TodosDispatchContext.Provider>
@@ -30,7 +30,7 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-type TasksReducerAction =
+type TodosReducerAction =
   | {
       type: 'add'
       payload: AddTodoInputs
@@ -58,7 +58,7 @@ type TasksReducerAction =
       to: TodoStatus
     }
 
-const tasksReducer = (todos: Todo[], action: TasksReducerAction) => {
+const todosReducer = (todos: Todo[], action: TodosReducerAction) => {
   switch (action.type) {
     case 'add': {
       return TodosService.addTodo(todos, action.payload)
